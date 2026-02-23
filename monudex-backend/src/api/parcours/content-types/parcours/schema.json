@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "parcourss",
+  "info": {
+    "singularName": "parcours",
+    "pluralName": "parcourss",
+    "displayName": "parcours"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "parcours"
+    },
+    "parcours_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::parcours-item.parcours-item",
+      "mappedBy": "parcour"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "parcours_items",
+  "info": {
+    "singularName": "parcours-item",
+    "pluralName": "parcours-items",
+    "displayName": "parcours_item"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "parcour": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::parcours.parcours",
+      "inversedBy": "parcours_items"
+    },
+    "poi": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::poi.poi",
+      "inversedBy": "parcours_items"
+    },
+    "order": {
+      "type": "integer"
+    }
+  }
+}

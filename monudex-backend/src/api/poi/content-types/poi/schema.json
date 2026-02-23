@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pois",
+  "info": {
+    "singularName": "poi",
+    "pluralName": "pois",
+    "displayName": "poi"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "longitude": {
+      "type": "decimal"
+    },
+    "latitude": {
+      "type": "decimal"
+    },
+    "google_place_id": {
+      "type": "string"
+    },
+    "parcours_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::parcours-item.parcours-item",
+      "mappedBy": "poi"
+    }
+  }
+}
