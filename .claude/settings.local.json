@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:/Users/f.abdelghani/Documents/projet cours/MonudexProto/monudex-backend\" && node -e \"\nconst Database = require\\('./node_modules/better-sqlite3'\\);\nconst db = new Database\\('.tmp/data.db'\\);\nconst items = db.prepare\\('SELECT id, published_at, typeof\\(published_at\\) as t FROM parcours_items'\\).all\\(\\);\nconsole.log\\('All items published_at:', items.map\\(i => \\({id: i.id, published_at: i.published_at, type: i.t}\\)\\)\\);\ndb.close\\(\\);\n\")"
+    ]
+  }
+}

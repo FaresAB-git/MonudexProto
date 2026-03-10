@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_parcours",
+  "info": {
+    "singularName": "user-parcours",
+    "pluralName": "user-parcourss",
+    "displayName": "UserParcours"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "status": {
+      "type": "enumeration",
+      "enum": ["in_progress", "paused", "completed"],
+      "default": "in_progress",
+      "required": true
+    },
+    "progress_percent": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "max": 100
+    },
+    "completed_at": {
+      "type": "datetime"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "parcours": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::parcours.parcours",
+      "inversedBy": "user_parcours"
+    }
+  }
+}

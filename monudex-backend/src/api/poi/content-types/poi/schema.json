@@ -4,26 +4,35 @@
   "info": {
     "singularName": "poi",
     "pluralName": "pois",
-    "displayName": "poi"
+    "displayName": "POI"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "description": {
       "type": "text"
     },
-    "longitude": {
-      "type": "decimal"
-    },
     "latitude": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true
+    },
+    "longitude": {
+      "type": "decimal",
+      "required": true
     },
     "google_place_id": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "category": {
       "type": "string"
     },
     "parcours_items": {

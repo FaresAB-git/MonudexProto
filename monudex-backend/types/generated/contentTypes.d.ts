@@ -430,6 +430,42 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBadgeBadge extends Struct.CollectionTypeSchema {
+  collectionName: 'badges';
+  info: {
+    displayName: 'Badge';
+    pluralName: 'badges';
+    singularName: 'badge';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    condition_type: Schema.Attribute.Enumeration<
+      ['parcours_completed', 'distance_total', 'pois_visited']
+    > &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    icon_name: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::badge.badge'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    target_value: Schema.Attribute.Integer & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_badges: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-badge.user-badge'
+    >;
+  };
+}
+
 export interface ApiParcoursItemParcoursItem
   extends Struct.CollectionTypeSchema {
   collectionName: 'parcours_items';
@@ -439,7 +475,7 @@ export interface ApiParcoursItemParcoursItem
     singularName: 'parcours-item';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -464,33 +500,43 @@ export interface ApiParcoursItemParcoursItem
 export interface ApiParcoursParcours extends Struct.CollectionTypeSchema {
   collectionName: 'parcourss';
   info: {
-    displayName: 'parcours';
+    displayName: 'Parcours';
     pluralName: 'parcourss';
     singularName: 'parcours';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
+    distance_km: Schema.Attribute.Decimal;
+    duration_min: Schema.Attribute.Integer;
+    image_url: Schema.Attribute.String;
+    is_published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::parcours.parcours'
     > &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     parcours_items: Schema.Attribute.Relation<
       'oneToMany',
       'api::parcours-item.parcours-item'
     >;
     publishedAt: Schema.Attribute.DateTime;
+    reviews: Schema.Attribute.Relation<'oneToMany', 'api::review.review'>;
+    tags: Schema.Attribute.JSON;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    user_parcours: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-parcours.user-parcours'
+    >;
     users_permissions_user: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.user'
@@ -501,25 +547,27 @@ export interface ApiParcoursParcours extends Struct.CollectionTypeSchema {
 export interface ApiPoiPoi extends Struct.CollectionTypeSchema {
   collectionName: 'pois';
   info: {
-    displayName: 'poi';
+    displayName: 'POI';
     pluralName: 'pois';
     singularName: 'poi';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
+    category: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
     google_place_id: Schema.Attribute.String;
-    latitude: Schema.Attribute.Decimal;
+    image_url: Schema.Attribute.String;
+    latitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::poi.poi'> &
       Schema.Attribute.Private;
-    longitude: Schema.Attribute.Decimal;
-    name: Schema.Attribute.String;
+    longitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     parcours_items: Schema.Attribute.Relation<
       'oneToMany',
       'api::parcours-item.parcours-item'
@@ -528,6 +576,129 @@ export interface ApiPoiPoi extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiReviewReview extends Struct.CollectionTypeSchema {
+  collectionName: 'reviews';
+  info: {
+    displayName: 'Review';
+    pluralName: 'reviews';
+    singularName: 'review';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    comment: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::review.review'
+    > &
+      Schema.Attribute.Private;
+    parcours: Schema.Attribute.Relation<'manyToOne', 'api::parcours.parcours'>;
+    publishedAt: Schema.Attribute.DateTime;
+    rating: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 5;
+          min: 1;
+        },
+        number
+      >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiUserBadgeUserBadge extends Struct.CollectionTypeSchema {
+  collectionName: 'user_badges';
+  info: {
+    displayName: 'UserBadge';
+    pluralName: 'user-badges';
+    singularName: 'user-badge';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    badge: Schema.Attribute.Relation<'manyToOne', 'api::badge.badge'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-badge.user-badge'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    unlocked_at: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiUserParcoursUserParcours
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'user_parcours';
+  info: {
+    displayName: 'UserParcours';
+    pluralName: 'user-parcourss';
+    singularName: 'user-parcours';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    completed_at: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-parcours.user-parcours'
+    > &
+      Schema.Attribute.Private;
+    parcours: Schema.Attribute.Relation<'manyToOne', 'api::parcours.parcours'>;
+    progress_percent: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<
+      ['in_progress', 'paused', 'completed']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'in_progress'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1042,9 +1213,13 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::badge.badge': ApiBadgeBadge;
       'api::parcours-item.parcours-item': ApiParcoursItemParcoursItem;
       'api::parcours.parcours': ApiParcoursParcours;
       'api::poi.poi': ApiPoiPoi;
+      'api::review.review': ApiReviewReview;
+      'api::user-badge.user-badge': ApiUserBadgeUserBadge;
+      'api::user-parcours.user-parcours': ApiUserParcoursUserParcours;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

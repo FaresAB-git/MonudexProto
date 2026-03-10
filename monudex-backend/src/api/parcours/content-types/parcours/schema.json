@@ -4,18 +4,35 @@
   "info": {
     "singularName": "parcours",
     "pluralName": "parcourss",
-    "displayName": "parcours"
+    "displayName": "Parcours"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "description": {
       "type": "text"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "duration_min": {
+      "type": "integer"
+    },
+    "distance_km": {
+      "type": "decimal"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": false
     },
     "users_permissions_user": {
       "type": "relation",
@@ -28,6 +45,18 @@
       "relation": "oneToMany",
       "target": "api::parcours-item.parcours-item",
       "mappedBy": "parcour"
+    },
+    "reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review.review",
+      "mappedBy": "parcours"
+    },
+    "user_parcours": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-parcours.user-parcours",
+      "mappedBy": "parcours"
     }
   }
 }

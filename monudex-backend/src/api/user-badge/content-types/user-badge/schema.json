@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_badges",
+  "info": {
+    "singularName": "user-badge",
+    "pluralName": "user-badges",
+    "displayName": "UserBadge"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "unlocked_at": {
+      "type": "datetime",
+      "required": true
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "badge": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::badge.badge",
+      "inversedBy": "user_badges"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "badges",
+  "info": {
+    "singularName": "badge",
+    "pluralName": "badges",
+    "displayName": "Badge"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "icon_name": {
+      "type": "string"
+    },
+    "condition_type": {
+      "type": "enumeration",
+      "enum": ["parcours_completed", "distance_total", "pois_visited"],
+      "required": true
+    },
+    "target_value": {
+      "type": "integer",
+      "required": true
+    },
+    "user_badges": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-badge.user-badge",
+      "mappedBy": "badge"
+    }
+  }
+}
