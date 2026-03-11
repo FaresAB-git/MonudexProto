@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "dev": "concurrently --names \"BACK,FRONT\" --prefix-colors \"yellow,cyan\" \"npm run develop --prefix monudex-backend\" \"npm run dev --prefix parcours-app\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
+
