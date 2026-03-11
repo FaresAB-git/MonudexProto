@@ -9,6 +9,7 @@ import MyParcours from './pages/MyParcours';
 import CreateParcours from './pages/CreateParcours';
 import Rewards from './pages/Rewards';
 import Profile from './pages/Profile';
+import NavigationMap from './pages/NavigationMap';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/parcours/:id" element={<ParcoursDetail />} />
+        <Route path="/parcours/:id/map" element={<ProtectedRoute><NavigationMap /></ProtectedRoute>} />
         <Route path="/parcours" element={<ProtectedRoute><MyParcours /></ProtectedRoute>} />
         <Route path="/create" element={<ProtectedRoute><CreateParcours /></ProtectedRoute>} />
         <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />

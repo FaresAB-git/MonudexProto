@@ -6,8 +6,7 @@ import {
 import { createParcours, updateParcours, createPoi, createParcoursItem, fetchParcoursById } from '../api/parcours';
 import { useAuth } from '../context/AuthContext';
 import BottomNav from '../components/BottomNav';
-
-const LIBRARIES = ['places'];
+import { MAP_LIBRARIES as LIBRARIES } from '../lib/mapConfig';
 const MAP_OPTIONS = {
   disableDefaultUI: true,
   zoomControl: true,

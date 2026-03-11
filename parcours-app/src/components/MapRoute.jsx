@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { GoogleMap, Marker, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
-
-const MAP_LIBRARIES = ['places'];
+import { MAP_LIBRARIES } from '../lib/mapConfig';
 const MAP_STYLE = { width: '100%', height: '100%' };
 const MAP_OPTIONS = {
   disableDefaultUI: true,

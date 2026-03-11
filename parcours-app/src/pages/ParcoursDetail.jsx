@@ -24,6 +24,7 @@ export default function ParcoursDetail() {
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewError, setReviewError] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [gpsError, setGpsError] = useState('');
 
   useEffect(() => {
     fetchParcoursById(id)
@@ -75,17 +76,27 @@ export default function ParcoursDetail() {
 
   const handleStart = async () => {
     if (!user) { navigate('/login'); return; }
-    if (!started) {
-      try {
-        await createUserParcours({
-          status: 'in_progress',
-          progress_percent: 0,
-          parcours: id,
-        });
-        setStarted(true);
-      } catch (e) { console.error(e); }
+    setGpsError('');
+    if (!navigator.geolocation) {
+      setGpsError('La géolocalisation n\'est pas supportée par votre navigateur.');
+      return;
     }
-    navigate(`/parcours/${id}/map`);
+    navigator.geolocation.getCurrentPosition(
+      async () => {
+        if (!started) {
+          try {
+            await createUserParcours({
+              status: 'in_progress',
+              progress_percent: 0,
+              parcours: id,
+            });
+            setStarted(true);
+          } catch (e) { console.error(e); }
+        }
+        navigate(`/parcours/${id}/map`);
+      },
+      () => setGpsError('Activez la géolocalisation pour démarrer le parcours.')
+    );
   };
 
   const handleSubmitReview = async (e) => {
@@ -171,9 +182,14 @@ export default function ParcoursDetail() {
           </div>
 
           {/* CTA */}
-          <button className="btn btn-primary" onClick={handleStart} style={{ marginBottom: 20 }}>
+          <button className="btn btn-primary" onClick={handleStart} style={{ marginBottom: gpsError ? 8 : 20 }}>
             ▷ {started ? 'Continuer le parcours' : 'Démarrer le parcours'}
           </button>
+          {gpsError && (
+            <p style={{ color: 'var(--color-danger)', fontSize: 13, marginBottom: 20, textAlign: 'center' }}>
+              📍 {gpsError}
+            </p>
+          )}
 
           {/* Description */}
           {description && (
