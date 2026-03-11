@@ -32,7 +32,7 @@ export default function ParcoursDetail() {
       .finally(() => setLoading(false));
 
     if (user) {
-      fetchUserParcours(user.id).then((res) => {
+      fetchUserParcours().then((res) => {
         const found = res.data?.find((up) => up.parcours?.documentId === id || up.parcours?.id === Number(id));
         if (found) { setUserParcoursId(found.id); setStarted(true); }
       }).catch(console.error);
@@ -80,7 +80,6 @@ export default function ParcoursDetail() {
         await createUserParcours({
           status: 'in_progress',
           progress_percent: 0,
-          users_permissions_user: user.id,
           parcours: id,
         });
         setStarted(true);
@@ -98,7 +97,6 @@ export default function ParcoursDetail() {
       const newReview = await createReview({
         rating: reviewRating,
         comment: reviewComment,
-        users_permissions_user: user.id,
         parcours: id,
       });
       setParcours((prev) => ({

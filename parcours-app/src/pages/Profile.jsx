@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { fetchParcours, fetchUserParcours, fetchUserBadges } from '../api/parcours';
+import { fetchMyParcours, fetchUserParcours, fetchUserBadges } from '../api/parcours';
 import BottomNav from '../components/BottomNav';
 
 export default function Profile() {
@@ -13,8 +13,8 @@ export default function Profile() {
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
     Promise.all([
-      fetchParcours({ 'filters[users_permissions_user][id][$eq]': user.id }),
-      fetchUserParcours(user.id),
+      fetchMyParcours(),
+      fetchUserParcours(),
       fetchUserBadges(user.id),
     ]).then(([mine, activity, ub]) => {
       const completed = activity.data?.filter((up) => up.status === 'completed') || [];

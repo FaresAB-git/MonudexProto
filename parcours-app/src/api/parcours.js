@@ -3,6 +3,11 @@ import client from './client';
 // --- Parcours ---
 const POI_FIELDS = ['name', 'description', 'latitude', 'longitude', 'image_url', 'category', 'google_place_id'];
 
+export const fetchMyParcours = async () => {
+  const res = await client.get('/parcourss/me');
+  return res.data;
+};
+
 export const fetchParcours = async (params = {}) => {
   const populate = {
     'populate[parcours_items][fields][0]': 'order',
@@ -91,13 +96,8 @@ export const createReview = async (data) => {
 };
 
 // --- UserParcours ---
-export const fetchUserParcours = async (userId) => {
-  const res = await client.get('/user-parcourss', {
-    params: {
-      'filters[users_permissions_user][id][$eq]': userId,
-      'populate[parcours][populate][parcours_items][populate][poi]': '*',
-    },
-  });
+export const fetchUserParcours = async () => {
+  const res = await client.get('/user-parcourss/me');
   return res.data;
 };
 

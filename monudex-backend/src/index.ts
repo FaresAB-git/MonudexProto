@@ -43,10 +43,76 @@ const SEED_PARCOURS = [
   },
 ];
 
+// Permissions à configurer automatiquement
+const PERMISSIONS = {
+  public: [
+    'api::parcours.parcours.find',
+    'api::parcours.parcours.findOne',
+    'api::parcours-item.parcours-item.find',
+    'api::parcours-item.parcours-item.findOne',
+    'api::poi.poi.find',
+    'api::poi.poi.findOne',
+    'api::review.review.find',
+    'api::review.review.findOne',
+  ],
+  authenticated: [
+    'api::parcours.parcours.find',
+    'api::parcours.parcours.findOne',
+    'api::parcours.parcours.findMe',
+    'api::parcours.parcours.create',
+    'api::parcours.parcours.update',
+    'api::parcours.parcours.delete',
+    'api::parcours-item.parcours-item.find',
+    'api::parcours-item.parcours-item.findOne',
+    'api::parcours-item.parcours-item.create',
+    'api::parcours-item.parcours-item.update',
+    'api::parcours-item.parcours-item.delete',
+    'api::poi.poi.find',
+    'api::poi.poi.findOne',
+    'api::poi.poi.create',
+    'api::review.review.find',
+    'api::review.review.findOne',
+    'api::review.review.create',
+    'api::user-parcours.user-parcours.find',
+    'api::user-parcours.user-parcours.findOne',
+    'api::user-parcours.user-parcours.findMe',
+    'api::user-parcours.user-parcours.create',
+    'api::user-parcours.user-parcours.update',
+    'api::badge.badge.find',
+    'api::user-badge.user-badge.find',
+  ],
+};
+
+async function setupPermissions(strapi: Core.Strapi) {
+  const roles = await strapi.query('plugin::users-permissions.role').findMany({});
+  const publicRole = roles.find((r: any) => r.type === 'public');
+  const authRole = roles.find((r: any) => r.type === 'authenticated');
+
+  for (const [roleType, actions] of Object.entries(PERMISSIONS)) {
+    const role = roleType === 'public' ? publicRole : authRole;
+    if (!role) continue;
+
+    for (const action of actions) {
+      const exists = await strapi.query('plugin::users-permissions.permission').findOne({
+        where: { action, role: role.id },
+      });
+      if (!exists) {
+        await strapi.query('plugin::users-permissions.permission').create({
+          data: { action, role: role.id },
+        });
+      }
+    }
+  }
+  strapi.log.info('✅ Permissions configured');
+}
+
 export default {
   register(/* { strapi }: { strapi: Core.Strapi } */) {},
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    // Configure les permissions automatiquement
+    await setupPermissions(strapi);
+
     // Seed si aucun parcours-item n'existe
     const existingItems = await strapi.documents('api::parcours-item.parcours-item').findMany({});
     if (existingItems.length > 0) return;

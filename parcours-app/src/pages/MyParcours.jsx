@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchParcours, fetchUserParcours, deleteParcours } from '../api/parcours';
+import { fetchMyParcours, fetchUserParcours, deleteParcours } from '../api/parcours';
 import { useAuth } from '../context/AuthContext';
 import BottomNav from '../components/BottomNav';
 
@@ -50,8 +50,8 @@ export default function MyParcours() {
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
     Promise.all([
-      fetchParcours({ 'filters[users_permissions_user][id][$eq]': user.id }),
-      fetchUserParcours(user.id),
+      fetchMyParcours(),
+      fetchUserParcours(),
     ])
       .then(([mine, activity]) => {
         setMyParcours(mine.data || []);
@@ -68,11 +68,11 @@ export default function MyParcours() {
     _upId: up.id,
   })).filter((p) => p.id);
 
-  const handleDeleteParcours = async (id) => {
-    if (!confirm('Supprimer ce parcours ?')) return;
+  const handleDeleteParcours = async (docId) => {
+    if (!confirm('Supprimer ce parcours définitivement ?')) return;
     try {
-      await deleteParcours(id);
-      setMyParcours((prev) => prev.filter((p) => p.id !== id));
+      await deleteParcours(docId);
+      setMyParcours((prev) => prev.filter((p) => (p.documentId || p.id) !== docId));
     } catch (e) { alert('Erreur lors de la suppression'); }
   };
 
